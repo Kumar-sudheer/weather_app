@@ -1,12 +1,23 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, ActivityIndicator, StyleSheet, ImageBackground, ScrollView, RefreshControl, Keyboard } from 'react-native';
-import { BlurView } from 'expo-blur';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  ActivityIndicator,
+  StyleSheet,
+  ImageBackground,
+  ScrollView,
+  RefreshControl,
+  Keyboard
+} from 'react-native';
 import * as Location from 'expo-location';
 import axios from 'axios';
 import WeatherCard from '../components/WeatherCard';
 import ForecastList from '../components/ForecastList';
 import { fetchWeather } from '../utils/fetchWeather';
 import { fetchForecast } from '../utils/fetchForecast';
+import { Ionicons } from '@expo/vector-icons';
 
 const apikey = "52b4b30e80ea54992a38162219caba8f";
 
@@ -83,37 +94,36 @@ export default function HomeScreen() {
         keyboardShouldPersistTaps="handled"
       >
         <View style={styles.container}>
-          <Text style={styles.title}>Weather App</Text>
-          <BlurView intensity={60} tint="light" style={styles.glassBox}>
-            <View style={styles.inputContainer}>
-              <TextInput
-                style={styles.input}
-                placeholder="Enter city"
-                placeholderTextColor="#888"
-                value={city}
-                onChangeText={setCity}
-                returnKeyType="search"
-                onSubmitEditing={handleSearch}
-              />
-              <TouchableOpacity style={styles.button} onPress={handleSearch} activeOpacity={0.8}>
-                <Text style={styles.buttonText}>Search</Text>
-              </TouchableOpacity>
-            </View>
-          </BlurView>
-          {loading && <ActivityIndicator size="large" color="#1e90ff" style={{ marginVertical: 20 }} />}
+          <Text style={styles.header}>🌤️ Weather Now</Text>
+
+          <View style={styles.searchBox}>
+            <Ionicons name="search-outline" size={20} color="#666" style={styles.icon} />
+            <TextInput
+              style={styles.input}
+              placeholder="Search by city..."
+              value={city}
+              onChangeText={setCity}
+              returnKeyType="search"
+              onSubmitEditing={handleSearch}
+              placeholderTextColor="#999"
+            />
+            <TouchableOpacity onPress={handleSearch} style={styles.searchBtn}>
+              <Text style={styles.searchBtnText}>Go</Text>
+            </TouchableOpacity>
+          </View>
+
+          {loading && <ActivityIndicator size="large" color="#007aff" style={{ marginTop: 20 }} />}
+
           {weather && (
-            <BlurView intensity={60} tint="light" style={styles.glassBox}>
-              <View style={styles.cardInner}>
-                <WeatherCard weather={weather} />
-              </View>
-            </BlurView>
+            <View style={styles.card}>
+              <WeatherCard weather={weather} />
+            </View>
           )}
+
           {forecast && (
-            <BlurView intensity={60} tint="light" style={styles.glassBox}>
-              <View style={styles.cardInner}>
-                <ForecastList forecast={forecast} />
-              </View>
-            </BlurView>
+            <View style={styles.card}>
+              <ForecastList forecast={forecast} />
+            </View>
           )}
         </View>
       </ScrollView>
@@ -125,62 +135,59 @@ const styles = StyleSheet.create({
   scrollContent: {
     flexGrow: 1,
     justifyContent: 'center',
-    paddingVertical: 32,
+    paddingVertical: 40,
   },
   container: {
     flex: 1,
     alignItems: 'center',
-    paddingTop: 70,
-    paddingBottom: 50,
-    backgroundColor: 'transparent',
+    paddingHorizontal: 20,
   },
-  title: {
-    fontSize: 40,
-    fontWeight: '600',
-    marginBottom: 36,
-    color: '#222',
-    letterSpacing: 1,
+  header: {
+    fontSize: 34,
+    fontWeight: '700',
+    color: '#fff',
+    marginBottom: 30,
     textAlign: 'center',
+    textShadowColor: '#000',
+    textShadowOffset: { width: 0, height: 2 },
+    textShadowRadius: 6,
   },
-  glassBox: {
-    width: '90%',
-    maxWidth: 350,
-    alignSelf: 'center',
-    borderRadius: 24,
-    marginBottom: 24,
-    overflow: 'hidden',
-    backgroundColor: 'rgba(255,255,255,0.15)',
-  },
-  inputContainer: {
+  searchBox: {
     flexDirection: 'row',
     alignItems: 'center',
+    backgroundColor: 'rgba(255,255,255,0.9)',
+    borderRadius: 16,
     paddingHorizontal: 12,
-    paddingVertical: 8,
+    paddingVertical: 10,
+    width: '100%',
+    marginBottom: 20,
+    elevation: 5,
+  },
+  icon: {
+    marginRight: 8,
   },
   input: {
     flex: 1,
-    height: 44,
-    fontSize: 18,
-    paddingHorizontal: 12,
-    color: '#222',
-    backgroundColor: 'transparent',
-    borderRadius: 12,
-    fontWeight: '400',
+    fontSize: 16,
+    color: '#333',
   },
-  button: {
+  searchBtn: {
     backgroundColor: '#007aff',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 12,
-    marginLeft: 8,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 10,
+    marginLeft: 10,
   },
-  buttonText: {
+  searchBtnText: {
     color: '#fff',
-    fontSize: 17,
     fontWeight: '500',
-    letterSpacing: 0.5,
   },
-  cardInner: {
-    padding: 12,
+  card: {
+    width: '100%',
+    backgroundColor: 'rgba(255,255,255,0.85)',
+    borderRadius: 16,
+    padding: 16,
+    marginBottom: 20,
+    elevation: 6,
   },
 });
